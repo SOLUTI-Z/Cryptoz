@@ -27,19 +27,18 @@
 </head>
 <body>
 
-<!-- 🔹 Ticker rotativo de moedas -->
+<!-- 🔹 Ticker rotativo -->
 <div id="ticker" class="bg-dark text-light py-2 px-3 overflow-hidden">
   <div id="ticker-content" class="d-inline-block"></div>
 </div>
-<!-- 🔹 Botão do menu -->
+
+<!-- 🔹 Botão menu lateral -->
 <button class="btn btn-secondary position-fixed top-0 start-0 m-3" data-bs-toggle="offcanvas" data-bs-target="#menuSidebar" aria-controls="menuSidebar">☰ Menu</button>
 
 <!-- 🔹 Painel principal -->
 <div id="painel" class="container py-4">
-
   <h2 class="mb-4">💼 Minha Carteira</h2>
 
-  <!-- Aqui virá a seção de Aportes, Portfólio e Cripto Scan -->
   <!-- 🔹 Seção: Aportar -->
   <section id="secaoAporte" class="my-5">
     <h4>📥 Novo Aporte</h4>
@@ -65,96 +64,94 @@
   <!-- 🔹 Seção: Portfólio -->
   <section id="secaoPortfolio" class="my-5">
     <h4>📊 Portfólio de Criptos</h4>
-    <div id="tabelaMoedas">
-      <!-- Aqui será preenchida dinamicamente a tabela com os dados -->
+    <div id="tabelaMoedas"></div>
+  </section>
+
+  <!-- 🔹 Seção: Cripto Scan -->
+  <section id="secaoCriptoScan" class="my-5">
+    <h4>🧠 Cripto Scan — Radar de Oportunidades</h4>
+    <p class="text-muted">
+      O Cripto Scan analisa ativos em tempo real para identificar oportunidades de compra ou venda com base em tendências, volatilidade e comportamento de mercado. Uma ferramenta estratégica para agir com mais precisão e segurança.
+    </p>
+    <div class="mt-4">
+      <h6>🔎 Ativos em Destaque</h6>
+      <div id="scanResultados" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mt-2"></div>
     </div>
   </section>
-<script>
-// 🟢 Banco de dados local
-let moedas = [];
+</div>
 
+<!-- 🔹 Menu lateral -->
+<div class="offcanvas offcanvas-start bg-dark text-light" tabindex="-1" id="menuSidebar" aria-labelledby="menuSidebarLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">📂 Navegação</h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body d-grid gap-2">
+    <button class="btn btn-outline-light w-100" onclick="scrollToSection('secaoAporte')">📥 Aportar</button>
+    <button class="btn btn-outline-light w-100" onclick="scrollToSection('secaoPortfolio')">📊 Portfólio</button>
+    <button class="btn btn-outline-light w-100" onclick="scrollToSection('secaoCriptoScan')">🧠 Cripto Scan</button>
+    <hr class="text-secondary">
+    <button class="btn btn-outline-warning w-100" onclick="toggleDarkMode()">🌓 Alternar Tema</button>
+    <div class="input-group mt-3">
+      <input type="file" class="form-control" id="arquivoImportar">
+      <button class="btn btn-outline-info" onclick="importarBackup()">⬆️ Importar</button>
+    </div>
+    <button class="btn btn-outline-success w-100 mt-2" onclick="exportarBackup()">⬇️ Exportar</button>
+  </div>
+</div>
+
+<!-- 🔹 Scripts principais -->
+<script>
+// Cadastro
+let moedas = [];
 document.getElementById("formMoeda").addEventListener("submit", function (e) {
   e.preventDefault();
-
   const nome = document.getElementById("nomeMoeda").value;
   const quantidade = parseFloat(document.getElementById("quantidadeMoeda").value);
   const preco = parseFloat(document.getElementById("precoMoeda").value);
-
   if (!nome || isNaN(quantidade) || isNaN(preco)) return;
-
   moedas.push({ nome, quantidade, preco });
   atualizarTabela();
   salvarBackup();
-
   this.reset();
 });
 
-// 🟢 Atualizar a tabela de moedas
 function atualizarTabela() {
   const tabela = document.getElementById("tabelaMoedas");
   if (!moedas.length) {
     tabela.innerHTML = '<div class="alert alert-warning">Nenhuma moeda cadastrada.</div>';
     return;
   }
-
   let total = 0;
   tabela.innerHTML = `
     <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Moeda</th>
-          <th>Quantidade</th>
-          <th>Preço Unitário</th>
-          <th>Total</th>
-        </tr>
-      </thead>
+      <thead><tr><th>Moeda</th><th>Quantidade</th><th>Preço Unitário</th><th>Total</th></tr></thead>
       <tbody>
         ${moedas.map(m => {
           const valor = m.quantidade * m.preco;
           total += valor;
-          return `
-            <tr>
-              <td>${m.nome}</td>
-              <td>${m.quantidade}</td>
-              <td>R$ ${m.preco.toFixed(2)}</td>
-              <td>R$ ${valor.toFixed(2)}</td>
-            </tr>
-          `;
+          return `<tr><td>${m.nome}</td><td>${m.quantidade}</td><td>R$ ${m.preco.toFixed(2)}</td><td>R$ ${valor.toFixed(2)}</td></tr>`;
         }).join("")}
       </tbody>
-      <tfoot>
-        <tr class="fw-bold">
-          <td colspan="3">Total investido</td>
-          <td>R$ ${total.toFixed(2)}</td>
-        </tr>
-      </tfoot>
-    </table>
-  `;
+      <tfoot><tr class="fw-bold"><td colspan="3">Total investido</td><td>R$ ${total.toFixed(2)}</td></tr></tfoot>
+    </table>`;
 }
 
-// 🟢 Backup: Exportar dados
+// Backup e modo escuro
 function exportarBackup() {
-  const data = JSON.stringify(moedas);
-  const blob = new Blob([data], { type: "application/json" });
+  const blob = new Blob([JSON.stringify(moedas)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
-
   link.href = url;
   link.download = "cryptoZ_backup.json";
   link.click();
-
   URL.revokeObjectURL(url);
 }
-
-// 🟢 Backup: Importar dados
 function importarBackup() {
-  const fileInput = document.getElementById("arquivoImportar");
-  const file = fileInput.files[0];
-
+  const file = document.getElementById("arquivoImportar").files[0];
   if (!file) return;
-
   const reader = new FileReader();
-  reader.onload = function (e) {
+  reader.onload = e => {
     try {
       moedas = JSON.parse(e.target.result);
       atualizarTabela();
@@ -163,133 +160,34 @@ function importarBackup() {
       alert("Arquivo inválido.");
     }
   };
-
   reader.readAsText(file);
 }
-
-// 🟢 Modo escuro
 function toggleDarkMode() {
   document.body.classList.toggle("bg-dark");
   document.body.classList.toggle("text-light");
 }
-
-// 🟢 Salvar no localStorage
 function salvarBackup() {
   localStorage.setItem("cryptoZ_dados", JSON.stringify(moedas));
 }
-
-// 🟢 Carregar dados ao iniciar
+function scrollToSection(id) {
+  const target = document.getElementById(id);
+  if (target) {
+    const yOffset = -30;
+    const y = target.getBoundingClientRect().top + window.scrollY + yOffset;
+    window.scrollTo({ top: y, behavior: "smooth" });
+  }
+}
 window.addEventListener("load", () => {
   const dados = localStorage.getItem("cryptoZ_dados");
   if (dados) {
     moedas = JSON.parse(dados);
     atualizarTabela();
   }
-
   carregarTicker();
   carregarCriptoScan();
 });
-</script>
-<!-- Bootstrap JS (via CDN) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-</div> <!-- fim do container painel -->
-</body>
-</html>
-<!-- 🔹 Menu lateral (Offcanvas) -->
-<div class="offcanvas offcanvas-start bg-dark text-light" tabindex="-1" id="menuSidebar" aria-labelledby="menuSidebarLabel">
-  <div class="offcanvas-header">
-    <h5 class="offcanvas-title" id="menuSidebarLabel">📂 Navegação</h5>
-    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
-  </div>
-  <div class="offcanvas-body d-grid gap-2">
-    <button class="btn btn-outline-light w-100" onclick="scrollToSection('secaoAporte')">📥 Aportar</button>
-    <button class="btn btn-outline-light w-100" onclick="scrollToSection('secaoPortfolio')">📊 Portfólio</button>
-    <button class="btn btn-outline-light w-100" onclick="scrollToSection('secaoCriptoScan')">🧠 Cripto Scan</button>
-
-    <hr class="text-secondary">
-
-    <button class="btn btn-outline-warning w-100" onclick="toggleDarkMode()">🌓 Alternar Tema</button>
-
-    <div class="input-group mt-3">
-      <input type="file" class="form-control" id="arquivoImportar">
-      <button class="btn btn-outline-info" onclick="importarBackup()">⬆️ Importar</button>
-    </div>
-    <button class="btn btn-outline-success w-100 mt-2" onclick="exportarBackup()">⬇️ Exportar</button>
-  </div>
-</div>
-<script>
+// Ticker CoinGecko
 async function carregarTicker() {
   const moedas = ["bitcoin", "ethereum", "tether", "usd", "real"];
-  const nomes = {
-    bitcoin: "BTC",
-    ethereum: "ETH",
-    tether: "USDT",
-    usd: "USD",
-    real: "BRL"
-  };
-
-  try {
-    const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${moedas.join(",")}&vs_currencies=usd,brl`);
-    const data = await res.json();
-
-    const ticker = Object.entries(data)
-      .map(([nome, valores]) => {
-        const sigla = nomes[nome] || nome.toUpperCase();
-        return `${sigla}: $${valores.usd?.toFixed(2)} | R$${valores.brl?.toFixed(2)}`;
-      })
-      .join(" • ");
-
-    const el = document.getElementById("ticker-content");
-    el.innerText = ticker + " • " + ticker + " • " + ticker; // repete texto pra efeito looping
-  } catch (e) {
-    document.getElementById("ticker-content").innerText = "Erro ao carregar cotações.";
-  }
-}
-</script>
-<script>
-function scrollToSection(id) {
-  const target = document.getElementById(id);
-  if (target) {
-    const yOffset = -30; // compensa a altura do ticker
-    const y = target.getBoundingClientRect().top + window.scrollY + yOffset;
-    window.scrollTo({ top: y, behavior: "smooth" });
-  }
-}
-</script>
-<script>
-function carregarCriptoScan() {
-  const ativos = [
-    { nome: "Bitcoin (BTC)", variacao: (Math.random() * 10 - 5).toFixed(2) },
-    { nome: "Ethereum (ETH)", variacao: (Math.random() * 8 - 4).toFixed(2) },
-    { nome: "Solana (SOL)", variacao: (Math.random() * 12 - 6).toFixed(2) },
-    { nome: "Ripple (XRP)", variacao: (Math.random() * 10 - 5).toFixed(2) },
-    { nome: "Cardano (ADA)", variacao: (Math.random() * 9 - 4.5).toFixed(2) }
-  ];
-
-  const container = document.getElementById("scanResultados");
-  container.innerHTML = "";
-
-  ativos.forEach(a => {
-    const variacao = parseFloat(a.variacao);
-    const direcao = variacao >= 2
-      ? { icone: "📈", cor: "success", texto: "Tendência de alta — possível compra" }
-      : variacao <= -2
-      ? { icone: "📉", cor: "danger", texto: "Tendência de baixa — possível venda" }
-      : { icone: "⚖️", cor: "secondary", texto: "Movimento neutro" };
-
-    const card = document.createElement("div");
-    card.className = "col";
-    card.innerHTML = `
-      <div class="card border-${direcao.cor} h-100">
-        <div class="card-body">
-          <h5 class="card-title">${a.nome} ${direcao.icone}</h5>
-          <p class="card-text">Variação: <strong class="text-${direcao.cor}">${variacao}%</strong></p>
-          <p class="small text-muted">${direcao.texto}</p>
-        </div>
-      </div>
-    `;
-    container.appendChild(card);
-  });
-}
-</script>
+  const nomes = { bitcoin: "BTC", ethereum: "ETH", tether: "USDT", usd: "USD",
