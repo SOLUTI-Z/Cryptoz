@@ -31,3 +31,41 @@
 <div id="ticker" class="bg-dark text-light py-2 px-3 overflow-hidden">
   <div id="ticker-content" class="d-inline-block"></div>
 </div>
+<!-- 🔹 Botão do menu -->
+<button class="btn btn-secondary position-fixed top-0 start-0 m-3" data-bs-toggle="offcanvas" data-bs-target="#menuSidebar" aria-controls="menuSidebar">☰ Menu</button>
+
+<!-- 🔹 Painel principal -->
+<div id="painel" class="container py-4">
+
+  <h2 class="mb-4">💼 Minha Carteira</h2>
+
+  <!-- Aqui virá a seção de Aportes, Portfólio e Cripto Scan -->
+  <!-- 🔹 Seção: Aportar -->
+  <section id="secaoAporte" class="my-5">
+    <h4>📥 Novo Aporte</h4>
+    <form id="formMoeda" class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label">Nome da Moeda</label>
+        <input type="text" class="form-control" id="nomeMoeda" required />
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Quantidade</label>
+        <input type="number" class="form-control" id="quantidadeMoeda" required />
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Preço Unitário</label>
+        <input type="number" step="0.01" class="form-control" id="precoMoeda" required />
+      </div>
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary">Adicionar</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- 🔹 Seção: Portfólio -->
+  <section id="secaoPortfolio" class="my-5">
+    <h4>📊 Portfólio de Criptos</h4>
+    <div id="tabelaMoedas">
+      <!-- Aqui será preenchida dinamicamente a tabela com os dados -->
+    </div>
+  </section>
