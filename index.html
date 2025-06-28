@@ -1,4 +1,43 @@
-    /* [Layout de Seções] */
+<!--
+  Projeto: CryptoZ v2.0
+  Desenvolvido por: Zilmar e Copilot
+  Última atualização: 28/06/2025
+-->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CryptoZ v2.0 - Radar de Inteligência</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0f0f0f;
+      color: #e0e0e0;
+    }
+    h1, h2 { color: #00ffc8; }
+    button {
+      background-color: #101820;
+      color: #00ffc8;
+      border: 1px solid #00ffc8;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background-color: #00ffc8;
+      color: #0f0f0f;
+    }
+    .hidden { display: none; }
+    input, select {
+      background-color: #1a1a1a;
+      color: #00ffc8;
+      border: 1px solid #00ffc8;
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+    }
     #menu {
       width: 200px;
       position: fixed;
@@ -6,17 +45,14 @@
       background: #111;
       padding-top: 20px;
     }
-
     #menu button {
       width: 100%;
       margin-bottom: 10px;
     }
-
     #conteudo {
       margin-left: 220px;
       padding: 20px;
     }
-
     #ticker {
       overflow: hidden;
       white-space: nowrap;
@@ -25,32 +61,27 @@
       padding: 10px;
       font-size: 14px;
     }
-
     #ticker span {
       display: inline-block;
       padding-right: 50px;
       animation: deslizante 20s linear infinite;
     }
-
     @keyframes deslizante {
       0% { transform: translateX(100%); }
       100% { transform: translateX(-100%); }
     }
-
     #agenteTerminal {
       background: #0d0d0d;
       padding: 20px;
       border: 1px solid #00ffc8;
       margin-top: 20px;
     }
-
     #agenteResposta {
       margin-top: 10px;
       padding: 10px;
       background-color: #1b1b1b;
       border-left: 4px solid #00ffc8;
     }
-
     .voltar-menu {
       margin: 20px 0;
       display: block;
@@ -58,12 +89,10 @@
   </style>
 </head>
 <body>
-  <!-- [Ticker Global - Cotações de Moedas e Índices] -->
   <div id="ticker">
     <span>💵 USD: R$ 5,00 | 💶 EUR: R$ 5,35 | ₿ BTC: R$ 330.000 | ETH: R$ 17.000 | Nasdaq: +1.2%</span>
   </div>
 
-  <!-- [Menu Lateral de Navegação] -->
   <div id="menu">
     <button onclick="abrirAba('cadastroMoeda')">Cadastrar Moeda</button>
     <button onclick="abrirAba('portfolio')">Ver Portfólio</button>
@@ -71,14 +100,12 @@
     <button onclick="abrirAba('agenteCrypto')">Agente Crypto</button>
   </div>
 
-  <!-- [Área Central de Conteúdo] -->
   <div id="conteudo">
     <div id="painelInicial">
       <h1>👋 Bem-vindo ao CryptoZ</h1>
       <p>Escolha uma opção no menu lateral para começar.</p>
     </div>
 
-    <!-- [Cadastro de Moeda] -->
     <div id="cadastroMoeda" class="hidden">
       <h2>Cadastro de Nova Moeda</h2>
       <form id="formCadastro">
@@ -94,14 +121,12 @@
       <button class="voltar-menu" onclick="voltarAoMenu()">⬅️ Voltar ao menu</button>
     </div>
 
-    <!-- [Portfólio de Criptoativos] -->
     <div id="portfolio" class="hidden">
       <h2>📁 Seu Portfólio</h2>
       <ul id="listaPortfolio"></ul>
       <button class="voltar-menu" onclick="voltarAoMenu()">⬅️ Voltar ao menu</button>
     </div>
 
-    <!-- [Crypto Scan - Inteligência Analítica] -->
     <div id="cryptoScan" class="hidden">
       <h2>📡 Crypto Scan</h2>
       <p>🎯 Analisando dados fictícios simulados:</p>
@@ -113,7 +138,6 @@
       <button class="voltar-menu" onclick="voltarAoMenu()">⬅️ Voltar ao menu</button>
     </div>
 
-    <!-- [Agente Crypto - Terminal de Perguntas] -->
     <div id="agenteCrypto" class="hidden">
       <h2>🤖 Agente Crypto</h2>
       <div id="agenteTerminal">
@@ -127,20 +151,19 @@
   </div>
 
   <script>
-    // [Navegação entre Abas]
     function abrirAba(idAba) {
-      const abas = document.querySelectorAll('#conteudo > div');
-      abas.forEach(div => div.classList.add('hidden'));
-      document.getElementById(idAba).classList.remove('hidden');
+      const todasAsAbas = document.querySelectorAll("#conteudo > div");
+      todasAsAbas.forEach(aba => aba.classList.add("hidden"));
+      const abaSelecionada = document.getElementById(idAba);
+      if (abaSelecionada) abaSelecionada.classList.remove("hidden");
     }
 
     function voltarAoMenu() {
-      const abas = document.querySelectorAll('#conteudo > div');
-      abas.forEach(div => div.classList.add('hidden'));
-      document.getElementById('painelInicial').classList.remove('hidden');
+      const todasAsAbas = document.querySelectorAll("#conteudo > div");
+      todasAsAbas.forEach(aba => aba.classList.add("hidden"));
+      document.getElementById("painelInicial").classList.remove("hidden");
     }
 
-    // [Cadastro e Portfólio]
     const portfolio = [];
 
     document.getElementById("formCadastro").addEventListener("submit", function (e) {
@@ -157,11 +180,11 @@
       const lista = document.getElementById("listaPortfolio");
       lista.innerHTML = "";
       portfolio.forEach((item, i) => {
-        const precoAtual = item.preco * (1 + (Math.random() - 0.5)); // Simulado
+        const precoAtual = item.preco * (1 + (Math.random() - 0.5));
         const lucro = ((precoAtual - item.preco) * item.qtd).toFixed(2);
         const li = document.createElement("li");
-        li.innerHTML = `🪙 ${item.nome}: ${item.qtd} un. | Preço Compra: R$${item.preco.toFixed(2)} | Rentabilidade: R$${lucro}
-        <button onclick="removerMoeda(${i})">🗑️ Excluir</button>`;
+        li.innerHTML = `🪙 ${item.nome}: ${item.qtd} un. | Compra: R$${item.preco.toFixed(2)} | Rentabilidade: R$${lucro} 
+          <button onclick="removerMoeda(${i})">🗑️ Excluir</button>`;
         lista.appendChild(li);
       });
     }
@@ -171,30 +194,13 @@
       atualizarPortfolio();
     }
 
-    // [Agente Crypto – Especializado em Finanças/Cripto]
     function responderPergunta() {
       const pergunta = document.getElementById("perguntaAgente").value.toLowerCase();
       const respostaDiv = document.getElementById("agenteResposta");
-      const termosPermitidos = ['btc', 'eth', 'cripto', 'investimento', 'moeda', 'rentabilidade', 'carteira', 'ativo', 'risco', 'tendência', 'mercado', 'finança', 'blockchain'];
-
+      const termosPermitidos = ['btc','eth','cripto','investimento','moeda','rentabilidade','carteira','ativo','risco','tendência','mercado','finança','blockchain'];
       const relevante = termosPermitidos.some(termo => pergunta.includes(termo));
 
       if (!relevante) {
         respostaDiv.innerText = "⚠️ Essa pergunta foge ao propósito do projeto. Sou um agente especializado em criptomoedas e mercado financeiro.";
       } else {
-        respostaDiv.innerText = "📈 Analisando... Esta é uma pergunta relevante ao universo cripto. Aguarde dados simulados ou insights.";
-      }
-    }
-
-    // [Botão de Exportação de Backup - Reservado para v2.1]
-    /*
-    <button id="btnExportarBackup" onclick="exportarBackup()">📦 Exportar Backup</button>
-    <script>
-      function exportarBackup() {
-        alert("🔐 Função de exportação em desenvolvimento.");
-      }
-    </script>
-    */
-  </script>
-</body>
-</html>
+        respostaDiv.innerText = "📈 Analisando... Esta é uma pergunta relevante ao universo cripto. Aguarde dados
