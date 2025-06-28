@@ -1,256 +1,200 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CryptoZ – Scanner de Mercado</title>
-  <style>
-    /* 🔲 Estilo visual completo */
-
-    body {
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(to bottom, #10141C, #1A1F2C);
-      font-family: 'Segoe UI', sans-serif;
-      color: #fff;
-    }
-
-    /* 🟩 Ticker */
-    .ticker-topo {
+    /* [Layout de Seções] */
+    #menu {
+      width: 200px;
       position: fixed;
-      top: 0;
-      width: 100%;
-      background: rgba(0,0,0,0.65);
-      overflow: hidden;
-      z-index: 1000;
-      padding: 8px 0;
-      border-bottom: 1px solid #00FFC6;
+      height: 100%;
+      background: #111;
+      padding-top: 20px;
     }
 
-    .ticker-conteudo {
-      display: flex;
-      gap: 30px;
-      animation: scroll 20s linear infinite;
+    #menu button {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    #conteudo {
+      margin-left: 220px;
+      padding: 20px;
+    }
+
+    #ticker {
+      overflow: hidden;
       white-space: nowrap;
+      background: #202020;
+      color: #00ffc8;
+      padding: 10px;
       font-size: 14px;
     }
 
-    @keyframes scroll {
+    #ticker span {
+      display: inline-block;
+      padding-right: 50px;
+      animation: deslizante 20s linear infinite;
+    }
+
+    @keyframes deslizante {
       0% { transform: translateX(100%); }
       100% { transform: translateX(-100%); }
     }
 
-    /* 📡 Menu lateral */
-    .menu-lateral {
-      position: fixed;
-      top: 60px;
-      left: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .menu-lateral button {
-      background: transparent;
-      color: #00FFC6;
-      border: 1px solid #00FFC6;
-      padding: 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .menu-lateral button:hover {
-      background: #00FFC6;
-      color: #000;
-    }
-
-    /* 🧠 Painel principal */
-    .painel {
-      padding: 100px 20px 40px 120px;
-    }
-
-    .painel h2 {
-      margin-bottom: 5px;
-      font-size: 24px;
-      color: #00FFC6;
-    }
-
-    .em-breve {
-      margin-top: 40px;
-      font-style: italic;
-      color: #999;
-    }
-
-    /* 🤖 Agente flutuante */
-    .agente-crypto {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #00FFC6;
-      color: #000;
-      padding: 12px 16px;
-      border-radius: 50px;
-      cursor: pointer;
-      font-weight: bold;
-      box-shadow: 0 0 10px #00FFC6;
-      transition: 0.3s;
-    }
-
-    .agente-crypto:hover {
-      background: #0ff;
-    }
-
-    /* Terminal simulado */
-    #terminal {
-      position: fixed;
-      right: 20px;
-      bottom: 70px;
-      width: 250px;
-      background: #1a1f2c;
-      border: 1px solid #00FFC6;
+    #agenteTerminal {
+      background: #0d0d0d;
       padding: 20px;
-      display: none;
-      z-index: 1001;
-      border-radius: 8px;
+      border: 1px solid #00ffc8;
+      margin-top: 20px;
     }
 
-    #terminal h3 {
-      margin-top: 0;
-      color: #00FFC6;
+    #agenteResposta {
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #1b1b1b;
+      border-left: 4px solid #00ffc8;
     }
 
-    .terminal-oculto {
-      display: none;
-    }
-
-    /* 📊 Cards de moedas */
-    .cards-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      margin-top: 40px;
-    }
-
-    .card-moeda {
-      flex: 1 1 160px;
-      background: #1f2630;
-      border-left: 6px solid #ccc;
-      border-radius: 8px;
-      padding: 16px;
-      color: #fff;
-      box-shadow: 0 0 8px rgba(0, 255, 198, 0.2);
-      transition: 0.3s;
-    }
-
-    .card-moeda strong {
-      font-size: 20px;
-    }
-
-    .card-moeda span {
+    .voltar-menu {
+      margin: 20px 0;
       display: block;
-      margin: 6px 0;
-      font-size: 18px;
     }
-
-    .card-moeda small {
-      color: #ccc;
-    }
-
-    .card-moeda.up { border-left-color: #00FF88; }
-    .card-moeda.down { border-left-color: #FF5577; }
-    .card-moeda.stable { border-left-color: #cccccc; }
-
-    /* Esconde seções por padrão */
-    .d-none { display: none; }
-
   </style>
 </head>
 <body>
-
-  <!-- 🟩 TICKER -->
-  <div class="ticker-topo">
-    <div class="ticker-conteudo">
-      <span>💹 BTC: R$244.320 🔼 +2.4%</span>
-      <span>💹 ETH: R$13.270 🔽 -1.2%</span>
-      <span>💹 SOL: R$648,10 🔼 +4.8%</span>
-      <span>💹 XRP: R$3,21 🔽 -0.6%</span>
-    </div>
+  <!-- [Ticker Global - Cotações de Moedas e Índices] -->
+  <div id="ticker">
+    <span>💵 USD: R$ 5,00 | 💶 EUR: R$ 5,35 | ₿ BTC: R$ 330.000 | ETH: R$ 17.000 | Nasdaq: +1.2%</span>
   </div>
 
-  <!-- 📡 MENU -->
-  <aside class="menu-lateral">
-    <button onclick="exibirSomente('secaoCriptoScan')">📡 Scanner de Mercado</button>
-  </aside>
+  <!-- [Menu Lateral de Navegação] -->
+  <div id="menu">
+    <button onclick="abrirAba('cadastroMoeda')">Cadastrar Moeda</button>
+    <button onclick="abrirAba('portfolio')">Ver Portfólio</button>
+    <button onclick="abrirAba('cryptoScan')">Crypto Scan</button>
+    <button onclick="abrirAba('agenteCrypto')">Agente Crypto</button>
+  </div>
 
-  <!-- 🧠 PAINEL PRINCIPAL -->
-  <section id="secaoCriptoScan" class="painel">
-    <h2>📡 Análise em Tempo Real com IA Crypto</h2>
-    <small>Dados atualizados por inteligência artificial</small>
-
-    <div class="cards-grid">
-
-      <div class="card-moeda up">
-        <strong>BTC</strong>
-        <span>R$244.320</span>
-        <small>🔼 +2.4%</small>
-      </div>
-
-      <div class="card-moeda down">
-        <strong>ETH</strong>
-        <span>R$13.270</span>
-        <small>🔽 -1.2%</small>
-      </div>
-
-      <div class="card-moeda stable">
-        <strong>BNB</strong>
-        <span>R$1.540</span>
-        <small>➖ 0.0%</small>
-      </div>
-
-      <div class="card-moeda up">
-        <strong>SOL</strong>
-        <span>R$648,10</span>
-        <small>🔼 +4.8%</small>
-      </div>
-
-      <div class="card-moeda down">
-        <strong>XRP</strong>
-        <span>R$3,21</span>
-        <small>🔽 -0.6%</small>
-      </div>
-
+  <!-- [Área Central de Conteúdo] -->
+  <div id="conteudo">
+    <div id="painelInicial">
+      <h1>👋 Bem-vindo ao CryptoZ</h1>
+      <p>Escolha uma opção no menu lateral para começar.</p>
     </div>
-  </section>
 
-  <!-- 🤖 BOTÃO CRYPTO -->
-  <div class="agente-crypto" onclick="abrirTerminal()">🤖 Posso ajudar?</div>
+    <!-- [Cadastro de Moeda] -->
+    <div id="cadastroMoeda" class="hidden">
+      <h2>Cadastro de Nova Moeda</h2>
+      <form id="formCadastro">
+        <label>Nome da Moeda</label>
+        <input type="text" id="nomeMoeda" required />
+        <label>Quantidade</label>
+        <input type="number" id="quantidadeMoeda" required />
+        <label>Preço de Compra (R$)</label>
+        <input type="number" id="precoMoeda" required />
+        <br />
+        <button type="submit">💾 Salvar</button>
+      </form>
+      <button class="voltar-menu" onclick="voltarAoMenu()">⬅️ Voltar ao menu</button>
+    </div>
 
-  <!-- 💬 TERMINAL -->
-  <div id="terminal" class="terminal-oculto">
-    <h3>Crypto diz:</h3>
-    <p>Quer saber o valor do BTC agora ou montar sua entrada?</p>
-    <button onclick="fecharTerminal()">Fechar</button>
+    <!-- [Portfólio de Criptoativos] -->
+    <div id="portfolio" class="hidden">
+      <h2>📁 Seu Portfólio</h2>
+      <ul id="listaPortfolio"></ul>
+      <button class="voltar-menu" onclick="voltarAoMenu()">⬅️ Voltar ao menu</button>
+    </div>
+
+    <!-- [Crypto Scan - Inteligência Analítica] -->
+    <div id="cryptoScan" class="hidden">
+      <h2>📡 Crypto Scan</h2>
+      <p>🎯 Analisando dados fictícios simulados:</p>
+      <ul>
+        <li>📊 BTC acima da média dos últimos 10 dias</li>
+        <li>🧠 ETH com alta volatilidade nas últimas 48h</li>
+        <li>📉 XRP em queda, possível suporte em R$2,30</li>
+      </ul>
+      <button class="voltar-menu" onclick="voltarAoMenu()">⬅️ Voltar ao menu</button>
+    </div>
+
+    <!-- [Agente Crypto - Terminal de Perguntas] -->
+    <div id="agenteCrypto" class="hidden">
+      <h2>🤖 Agente Crypto</h2>
+      <div id="agenteTerminal">
+        <label>Digite sua pergunta:</label><br />
+        <input type="text" id="perguntaAgente" placeholder="Ex: Qual a tendência do BTC?" />
+        <button onclick="responderPergunta()">➡️ Enviar</button>
+        <div id="agenteResposta"></div>
+      </div>
+      <button class="voltar-menu" onclick="voltarAoMenu()">⬅️ Voltar ao menu</button>
+    </div>
   </div>
 
   <script>
-    function exibirSomente(idAlvo) {
-      const secoes = document.querySelectorAll('.painel');
-      secoes.forEach(secao => secao.classList.add('d-none'));
-      const alvo = document.getElementById(idAlvo);
-      if (alvo) alvo.classList.remove('d-none');
+    // [Navegação entre Abas]
+    function abrirAba(idAba) {
+      const abas = document.querySelectorAll('#conteudo > div');
+      abas.forEach(div => div.classList.add('hidden'));
+      document.getElementById(idAba).classList.remove('hidden');
     }
 
-    function abrirTerminal() {
-      document.getElementById("terminal").style.display = "block";
+    function voltarAoMenu() {
+      const abas = document.querySelectorAll('#conteudo > div');
+      abas.forEach(div => div.classList.add('hidden'));
+      document.getElementById('painelInicial').classList.remove('hidden');
     }
 
-    function fecharTerminal() {
-      document.getElementById("terminal").style.display = "none";
+    // [Cadastro e Portfólio]
+    const portfolio = [];
+
+    document.getElementById("formCadastro").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const nome = document.getElementById("nomeMoeda").value;
+      const qtd = parseFloat(document.getElementById("quantidadeMoeda").value);
+      const preco = parseFloat(document.getElementById("precoMoeda").value);
+      portfolio.push({ nome, qtd, preco });
+      atualizarPortfolio();
+      this.reset();
+    });
+
+    function atualizarPortfolio() {
+      const lista = document.getElementById("listaPortfolio");
+      lista.innerHTML = "";
+      portfolio.forEach((item, i) => {
+        const precoAtual = item.preco * (1 + (Math.random() - 0.5)); // Simulado
+        const lucro = ((precoAtual - item.preco) * item.qtd).toFixed(2);
+        const li = document.createElement("li");
+        li.innerHTML = `🪙 ${item.nome}: ${item.qtd} un. | Preço Compra: R$${item.preco.toFixed(2)} | Rentabilidade: R$${lucro}
+        <button onclick="removerMoeda(${i})">🗑️ Excluir</button>`;
+        lista.appendChild(li);
+      });
     }
 
-    // Ativa a primeira seção por padrão
-    window.onload = () => exibirSomente('secaoCriptoScan');
+    function removerMoeda(index) {
+      portfolio.splice(index, 1);
+      atualizarPortfolio();
+    }
+
+    // [Agente Crypto – Especializado em Finanças/Cripto]
+    function responderPergunta() {
+      const pergunta = document.getElementById("perguntaAgente").value.toLowerCase();
+      const respostaDiv = document.getElementById("agenteResposta");
+      const termosPermitidos = ['btc', 'eth', 'cripto', 'investimento', 'moeda', 'rentabilidade', 'carteira', 'ativo', 'risco', 'tendência', 'mercado', 'finança', 'blockchain'];
+
+      const relevante = termosPermitidos.some(termo => pergunta.includes(termo));
+
+      if (!relevante) {
+        respostaDiv.innerText = "⚠️ Essa pergunta foge ao propósito do projeto. Sou um agente especializado em criptomoedas e mercado financeiro.";
+      } else {
+        respostaDiv.innerText = "📈 Analisando... Esta é uma pergunta relevante ao universo cripto. Aguarde dados simulados ou insights.";
+      }
+    }
+
+    // [Botão de Exportação de Backup - Reservado para v2.1]
+    /*
+    <button id="btnExportarBackup" onclick="exportarBackup()">📦 Exportar Backup</button>
+    <script>
+      function exportarBackup() {
+        alert("🔐 Função de exportação em desenvolvimento.");
+      }
+    </script>
+    */
   </script>
 </body>
 </html>
