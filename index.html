@@ -78,25 +78,33 @@
     </div>
   </section>
 </div>
-<!-- 🔹 Menu lateral -->
+<!-- 🔹 Menu lateral com scroll aprimorado -->
 <div class="offcanvas offcanvas-start bg-dark text-light" tabindex="-1" id="menuSidebar" aria-labelledby="menuSidebarLabel">
   <div class="offcanvas-header">
     <h5 class="offcanvas-title">📂 Navegação</h5>
-    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
   </div>
-  <div class="offcanvas-body d-grid gap-2">
-    <button class="btn btn-outline-light w-100" onclick="scrollToSection('secaoAporte')">📥 Aportar</button>
-    <button class="btn btn-outline-light w-100" onclick="scrollToSection('secaoPortfolio')">📊 Portfólio</button>
-    <button class="btn btn-outline-light w-100" onclick="scrollToSection('secaoCriptoScan')">🧠 Cripto Scan</button>
-    <hr class="text-secondary">
-    <button class="btn btn-outline-warning w-100" onclick="toggleDarkMode()">🌓 Alternar Tema</button>
-    <div class="input-group mt-3">
-      <input type="file" class="form-control" id="arquivoImportar">
+
+  <!-- 💡 Área com rolagem fluida -->
+  <div class="offcanvas-body d-grid gap-3 px-2" style="overflow-y: auto; max-height: 85vh;">
+    <button class="btn btn-outline-light w-100" onclick="scrollToSection('secaoAporte')" aria-label="Ir para Aporte">📥 Aportar</button>
+    <button class="btn btn-outline-light w-100" onclick="scrollToSection('secaoPortfolio')" aria-label="Ir para Portfólio">📊 Portfólio</button>
+    <button class="btn btn-outline-light w-100" onclick="scrollToSection('secaoCriptoScan')" aria-label="Ir para Cripto Scan">🧠 Cripto Scan</button>
+
+    <hr class="text-secondary my-2">
+
+    <button id="btnTema" class="btn btn-outline-warning w-100" onclick="toggleDarkMode()">🌓 Alternar Tema</button>
+
+    <small class="text-secondary pt-2">Backup da carteira:</small>
+    <div class="input-group">
+      <input type="file" class="form-control" id="arquivoImportar" aria-label="Selecionar arquivo de backup">
       <button class="btn btn-outline-info" onclick="importarBackup()">⬆️ Importar</button>
     </div>
-    <button class="btn btn-outline-success w-100 mt-2" onclick="exportarBackup()">⬇️ Exportar</button>
+    <button class="btn btn-outline-success w-100" onclick="exportarBackup()">⬇️ Exportar</button>
   </div>
 </div>
+
+
 <!-- 🔹 Scripts principais -->
 <script>
 // Cadastro
